@@ -11,13 +11,13 @@ import java.util.Optional;
 public interface EmployeeService {
     List<Employee> getAll();
 
-    void addEmployee(Employee employee);
+     Employee addEmployee(Employee employee);
 
     void deleteEmployee(Integer id);
 
     Optional<Employee> findEmployeeById(Integer id);
 
-    void updateEmployee( Integer id, Employee employee) throws ResourceNotFoundException;
+    Employee updateEmployee( Integer id, Employee employee) throws ResourceNotFoundException;
 
     List<Employee> findByDepartmentId(Integer deptId) ;
 
@@ -47,5 +47,5 @@ public interface EmployeeService {
 
     List<Employee> findByLastNameContainingAndLastNameEndingWith (String containingWord,String endingWords);
 
-    List<Employee> findByFirstNameOrderBySalary(String fristName);
+    List<Employee> findByFirstNameOrderBySalary(String firstName);
 }

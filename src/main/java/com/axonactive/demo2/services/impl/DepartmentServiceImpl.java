@@ -21,12 +21,14 @@ public class DepartmentServiceImpl implements DepartmentService {
         return departmentRepository.findAll();
     }
 
-    public void addDepartment(Department department) {
-        departmentRepository.save(department);
+    public Department addDepartment(Department department) {
+        Department createdDepartment=departmentRepository.save(department);
+        return createdDepartment;
     }
 
     public void deleteDepartment(Integer id) {
         departmentRepository.deleteById(id);
+
     }
 
     public Optional<Department> findDepartmentById(Integer id) {
@@ -35,16 +37,6 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public Department updateDepartment(Integer id, Department updateDetail) throws ResourceNotFoundException {
-//        Department updateDept = findDepartmentById(id)
-//                .orElseThrow(()-> new ResourceNotFoundException("Can not found that department"));
-//
-//        if (!updateDetail.getName().isEmpty()){
-//
-//        updateDept.setName(updateDetail.getName());
-//        }
-//        updateDept.setStartDate(updateDetail.getStartDate());
-//        departmentRepository.save(updateDept);
-//        return updateDept;
         return findDepartmentById(id)
                 .map(department -> {
                     department.setName(updateDetail.getName());

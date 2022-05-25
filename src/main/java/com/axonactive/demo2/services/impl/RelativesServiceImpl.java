@@ -21,8 +21,9 @@ public class RelativesServiceImpl implements RelativesService {
     }
 
     @Override
-    public void addRelatives(Relatives relatives) {
-        relativesRepository.save(relatives);
+    public Relatives addRelatives(Relatives relatives) {
+        Relatives newRelatives = relativesRepository.save(relatives);
+        return newRelatives;
     }
 
     @Override
@@ -36,7 +37,7 @@ public class RelativesServiceImpl implements RelativesService {
     }
 
     @Override
-    public void updateRelatives(Integer id, Relatives updateDetail) throws ResourceNotFoundException {
+    public Relatives updateRelatives(Integer id, Relatives updateDetail) throws ResourceNotFoundException {
         Relatives updateRelatives = findRelativesById(id).orElseThrow(()-> new ResourceNotFoundException("Can not found that Relatives"));
         updateRelatives.setEmployee(updateDetail.getEmployee());
         updateRelatives.setRelationship(updateDetail.getRelationship());
@@ -44,6 +45,7 @@ public class RelativesServiceImpl implements RelativesService {
         updateRelatives.setGender(updateDetail.getGender());
         updateRelatives.setPhoneNumber(updateDetail.getPhoneNumber());
         relativesRepository.save(updateRelatives);
+        return updateRelatives;
     }
 
     @Override

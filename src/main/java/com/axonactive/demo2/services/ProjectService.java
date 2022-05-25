@@ -9,12 +9,12 @@ import java.util.Optional;
 public interface ProjectService {
     List<Project> getAll();
 
-    void addProject(Project project);
+    Project addProject(Project project);
 
     void deleteProject(Integer id);
 
     Optional<Project> findProjectById(Integer id);
-    void updateProject( Integer id, Project project) throws ResourceNotFoundException;
+    Project updateProject( Integer id, Project project) throws ResourceNotFoundException;
 
     List<Project> findByDepartmentId(Integer deptId);
     List<Project> findByArea(String area);

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 
@@ -17,39 +18,43 @@ import java.util.List;
 
 public class DepartmentRestController {
     private final DepartmentService departmentService;
-    public final static String PATH= "/api/department";
+    public final static String PATH= "/api/departments";
 
-    @GetMapping("/list")
+    @GetMapping()
     public List<Department> getAllDepartment() {
         return departmentService.getAll();
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Department> getDepartmentById(@PathVariable(value = "id") Integer deptId) throws ResourceNotFoundException {
-        Department department = departmentService.findDepartmentById(deptId).orElseThrow(() -> new ResourceNotFoundException("Can not found that such department"));
-        return ResponseEntity.ok().body(department);
+        Department foundDepartment = departmentService.findDepartmentById(deptId).orElseThrow(() -> new ResourceNotFoundException("Can not found that such department"));
+        return ResponseEntity.ok().body(foundDepartment);
     }
 
-    @PostMapping("/add")
+    @PostMapping()
     public ResponseEntity<Department> createDepartment(@RequestBody Department dept) {
-        departmentService.addDepartment(dept);
-        return ResponseEntity.ok().body(dept);
+        Department createdDepartment =departmentService.addDepartment(dept);
+        return ResponseEntity.created(URI.create(DepartmentRestController.PATH+"/"+createdDepartment.getId())).body(createdDepartment);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void deleteDepartment(@PathVariable(value = "id") Integer id) {
-        departmentService.deleteDepartment(id);
+    @DeleteMapping()
+    public ResponseEntity<Void> deleteDepartment(@RequestParam Integer id) throws ResourceNotFoundException {
+        String result ="Delete successfully";
+        Department deleteDepartment = departmentService.findDepartmentById(id).
+                orElseThrow(()-> new ResourceNotFoundException("Cant not found department with this id: "+id));
+        departmentService.deleteDepartment(deleteDepartment.getId());
+        return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Department> updateDepartment(@PathVariable(value = "id") Integer id, @RequestBody Department department) throws ResourceNotFoundException {
-        return ResponseEntity.ok().body(departmentService.updateDepartment(id,department));
+    @PutMapping()
+    public ResponseEntity<Department> updateDepartment(@RequestParam Integer id, @RequestBody Department department) throws ResourceNotFoundException {
+        return ResponseEntity.created(URI.create(DepartmentRestController.PATH+"/"+id)).body(departmentService.updateDepartment(id,department));
 
     }
 
-    @GetMapping("/name")
-    public  List<Department>  findByName (@RequestParam String name ){
-        return departmentService.findByName(name);
+    @GetMapping("/query")
+    public  ResponseEntity<List<Department>>  findByName (@RequestParam String name ){
+        return ResponseEntity.created(URI.create(DepartmentRestController.PATH+"/name="+name)).body(departmentService.findByName(name)) ;
     }
 
 

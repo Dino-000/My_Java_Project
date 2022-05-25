@@ -1,5 +1,6 @@
 package com.axonactive.demo2.services.impl;
 
+import com.axonactive.demo2.entities.Department;
 import com.axonactive.demo2.entities.DepartmentLocation;
 import com.axonactive.demo2.exceptions.ResourceNotFoundException;
 import com.axonactive.demo2.repositories.DepartmentLocationRepository;
@@ -21,8 +22,9 @@ public class DepartmentLocationServiceImpl implements DepartmentLocationService 
     }
 
     @Override
-    public void addDepartmentLocation(DepartmentLocation departmentLocation) {
-        departmentLocationRepository.save(departmentLocation);
+    public DepartmentLocation addDepartmentLocation(DepartmentLocation departmentLocation) {
+        DepartmentLocation createdDepartmentLocation = departmentLocationRepository.save(departmentLocation);
+        return createdDepartmentLocation;
     }
 
     @Override
@@ -36,11 +38,12 @@ public class DepartmentLocationServiceImpl implements DepartmentLocationService 
     }
 
     @Override
-    public void updateDepartmentLocation(Integer id, DepartmentLocation updateDetail) throws ResourceNotFoundException {
+    public DepartmentLocation updateDepartmentLocation(Integer id, DepartmentLocation updateDetail) throws ResourceNotFoundException {
         DepartmentLocation updateDeptLocation = findDepartmentLocationById(id).orElseThrow(()-> new ResourceNotFoundException("Can not found that department"));
         updateDeptLocation.setLocation(updateDetail.getLocation());
         updateDeptLocation.setDepartment(updateDetail.getDepartment());
         departmentLocationRepository.save(updateDeptLocation);
+        return  updateDeptLocation;
     }
 
     @Override

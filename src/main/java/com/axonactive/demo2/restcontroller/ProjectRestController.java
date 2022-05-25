@@ -8,45 +8,45 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/project")
+@RequestMapping(ProjectRestController.PATH)
 
 public class ProjectRestController {
     private final ProjectService projectService;
+    public static final String PATH = "/api/projects";
 
-    @GetMapping("/list")
+    @GetMapping
     public List<Project> getAllProject(){
         return projectService.getAll();
     }
 
     @GetMapping("/get/{id}")
-//    public ResponseEntity<Project> getProjectById(@RequestParam Integer id) throws ResourceNotFoundException {
-    public ResponseEntity<Project> getProjectById(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
+    public ResponseEntity<Project> getProjectById(@RequestParam Integer id) throws ResourceNotFoundException {
         Project project = projectService.findProjectById(id).orElseThrow(() -> new ResourceNotFoundException("Can not found that such Project"));
         return ResponseEntity.ok().body(project);
     }
 
-    @PostMapping("/add")
-    public void createProject(@RequestBody Project project) {
-        projectService.addProject(project);
+    @PostMapping
+    public ResponseEntity<Project> createProject(@RequestBody Project project) {
+       Project newProject= projectService.addProject(project);
+       return ResponseEntity.created(URI.create(PATH+"/"+newProject.getId())).body(newProject);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void deleteProject(@PathVariable(value = "id") Integer id) {
+    @DeleteMapping
+    public ResponseEntity<Void> deleteProject(@RequestParam Integer id) {
         projectService.deleteProject(id);
+        return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/update/{id}")
-    public void updateProject(@PathVariable(value = "id") Integer id,@RequestBody Project project) throws ResourceNotFoundException {
-        projectService.updateProject(id,project);
+    @PutMapping
+    public ResponseEntity<Project> updateProject(@RequestParam Integer id,@RequestBody Project project) throws ResourceNotFoundException {
+       Project updatedProject = projectService.updateProject(id,project);
+       return ResponseEntity.created(URI.create(PATH+"/"+id)).body(updatedProject);
     }
 
-//    @GetMapping("/get")
-//    public List<Project> findProjectByDepartmentId (@RequestParam Integer deptId){
-//        return projectService.findProjectByDepartmentId(deptId);
-//    }
 }

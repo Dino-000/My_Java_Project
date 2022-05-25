@@ -22,8 +22,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public void addEmployee(Employee employee) {
-        employeeRepository.save(employee);
+    public Employee addEmployee(Employee employee) {
+        Employee addedEmployee = employeeRepository.save(employee);
+        return addedEmployee;
     }
 
     @Override
@@ -37,7 +38,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public void updateEmployee(Integer id, Employee updateDetail) throws ResourceNotFoundException {
+    public Employee updateEmployee(Integer id, Employee updateDetail) throws ResourceNotFoundException {
         Employee updateEmployee = findEmployeeById(id).orElseThrow(()-> new ResourceNotFoundException("Can not found that department"));
         updateEmployee.setEmpId(updateDetail.getEmpId());
         updateEmployee.setFirstName(updateDetail.getFirstName());
@@ -48,6 +49,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         updateEmployee.setDepartment(updateDetail.getDepartment());
         updateEmployee.setSalary(updateDetail.getSalary());
         employeeRepository.save(updateEmployee);
+
+        return updateEmployee;
     }
 
     @Override

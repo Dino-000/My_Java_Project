@@ -8,17 +8,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/relatives")
+@RequestMapping(RelativesRestController.PATH)
 
 public class RelativesRestController {
     private final RelativesService relativesService;
+    public static final String PATH = "/api/relatives";
 
-    @GetMapping("/list")
+    @GetMapping
     public List<Relatives> getAllRelatives(){
         return relativesService.getAll();
     }
@@ -29,18 +31,21 @@ public class RelativesRestController {
         return ResponseEntity.ok().body(relatives);
     }
 
-    @PostMapping("/add")
-    public void createRelatives(@RequestBody Relatives dept) {
-        relativesService.addRelatives(dept);
+    @PostMapping
+    public ResponseEntity<Relatives> createRelatives(@RequestBody Relatives relative) {
+        Relatives relatives= relativesService.addRelatives(relative);
+        return ResponseEntity.created(URI.create(PATH+"/"+relative.getId())).body(relatives);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void deleteRelatives(@PathVariable(value = "id") Integer id) {
+    @DeleteMapping
+    public ResponseEntity<Void> deleteRelatives(@RequestParam Integer id) {
         relativesService.deleteRelatives(id);
+        return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/update/{id}")
-    public void updateRelatives(@PathVariable(value = "id") Integer id,@RequestBody Relatives relatives) throws ResourceNotFoundException {
-        relativesService.updateRelatives(id,relatives);
+    @PutMapping
+    public ResponseEntity<Relatives> updateRelatives(@RequestParam Integer id, @RequestBody Relatives relatives) throws ResourceNotFoundException {
+        Relatives updatedRelatives= relativesService.updateRelatives(id,relatives);
+        return ResponseEntity.created(URI.create(PATH+"/"+id)).body(updatedRelatives);
     }
 }

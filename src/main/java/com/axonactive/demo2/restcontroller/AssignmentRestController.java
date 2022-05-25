@@ -8,38 +8,43 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/assignment")
+@RequestMapping(AssignmentRestController.PATH)
 public class AssignmentRestController {
     private final AssignmentService assignmentService;
+    public static final String PATH = "/api/assignments";
 
-    @GetMapping("/list")
-    public List<Assignment> getAllAssignment(){
-        return assignmentService.getAll();
+    @GetMapping
+    public ResponseEntity<List<Assignment>> getAllAssignment(){
+        return ResponseEntity.ok().body( assignmentService.getAll());
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Assignment> getAssignment(@PathVariable(value = "id") Integer id) throws ResourceNotFoundException {
         Assignment assignment = assignmentService.findAssignmentById(id).orElseThrow(() -> new ResourceNotFoundException("Can not found that such Assignment"));
         return ResponseEntity.ok().body(assignment);
     }
 
-    @PostMapping("/add")
-    public void createAssignment(@RequestBody Assignment assignment) {
-        assignmentService.addAssignment(assignment);
+    @PostMapping
+    public ResponseEntity<Assignment> createAssignment(@RequestBody Assignment assignment) {
+        Assignment createdAssignment = assignmentService.addAssignment(assignment);
+        return ResponseEntity.created(URI.create(PATH+"/"+createdAssignment.getId())).body(assignment);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void deleteAssignment(@PathVariable(value = "id") Integer id) {
+    @DeleteMapping
+    public ResponseEntity<Void> deleteAssignment(@RequestParam Integer id) {
         assignmentService.deleteAssignment(id);
+        return  ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/update/{id}")
-    public void updateAssignment(@PathVariable(value = "id") Integer id,@RequestBody Assignment assignment) throws ResourceNotFoundException {
-        assignmentService.updateAssignment(id,assignment);
+    @PutMapping
+    public ResponseEntity<Assignment> updateAssignment(@RequestParam Integer id,@RequestBody Assignment assignment) throws ResourceNotFoundException {
+        Assignment updatedAssignment = assignmentService.updateAssignment(id,assignment);
+        return ResponseEntity.created(URI.create(PATH+"/"+id)).body(updatedAssignment);
     }
 }

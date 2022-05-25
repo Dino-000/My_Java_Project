@@ -10,13 +10,13 @@ import java.util.Optional;
 public interface AssignmentService {
     List<Assignment> getAll();
 
-    void addAssignment(Assignment assignment);
+     Assignment addAssignment(Assignment assignment);
 
     void deleteAssignment(Integer id);
 
     Optional<Assignment> findAssignmentById(Integer id);
 
-    void updateAssignment( Integer id, Assignment assignment) throws ResourceNotFoundException;
+    Assignment updateAssignment( Integer id, Assignment assignment) throws ResourceNotFoundException;
 
     List<Assignment> findByNumberOfHour (Integer numberOfHour);
 

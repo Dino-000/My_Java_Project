@@ -1,19 +1,21 @@
 package com.axonactive.demo2.services.impl;
 
 import com.axonactive.demo2.entities.Assignment;
+import com.axonactive.demo2.entities.Department;
 import com.axonactive.demo2.exceptions.ResourceNotFoundException;
 import com.axonactive.demo2.repositories.AssignmentRepository;
 import com.axonactive.demo2.services.AssignmentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class AssignmentServiceImpl implements AssignmentService {
-    private final AssignmentRepository assignmentRepository;
+    @Autowired
+    private AssignmentRepository assignmentRepository;
 
     @Override
     public List<Assignment> getAll() {
@@ -21,8 +23,9 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
-    public void addAssignment(Assignment assignment) {
-        assignmentRepository.save(assignment);
+    public Assignment addAssignment(Assignment assignment) {
+        Assignment newAssignment = assignmentRepository.save(assignment);
+        return newAssignment;
     }
 
     @Override
@@ -36,12 +39,13 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
-    public void updateAssignment(Integer id, Assignment updateDetail) throws ResourceNotFoundException {
+    public Assignment updateAssignment(Integer id, Assignment updateDetail) throws ResourceNotFoundException {
         Assignment updateAssignment = findAssignmentById(id).orElseThrow(()-> new ResourceNotFoundException("Can not found that Assignment"));
         updateAssignment.setNumberOfHour(updateDetail.getNumberOfHour());
         updateAssignment.setEmployee(updateDetail.getEmployee());
         updateAssignment.setProject(updateAssignment.getProject());
         assignmentRepository.save(updateAssignment);
+        return  updateAssignment;
     }
 
     @Override

@@ -8,19 +8,21 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/employee")
+@RequestMapping(EmployeeRestController.PATH)
 
 public class EmployeeRestController {
     private final EmployeeService employeeService;
+    public static final String PATH = "/api/employees";
 
-    @GetMapping("/list")
-    public List<Employee> getAllEmployee(){
-        return employeeService.getAll();
+    @GetMapping
+    public ResponseEntity<List<Employee>> getAllEmployee(){
+        return ResponseEntity.ok().body(employeeService.getAll());
     }
 
     @GetMapping("/get/{id}")
@@ -29,18 +31,22 @@ public class EmployeeRestController {
         return ResponseEntity.ok().body(employee);
     }
 
-    @PostMapping("/add")
-    public void createEmployee(@RequestBody Employee dept) {
-        employeeService.addEmployee(dept);
+    @PostMapping
+    public ResponseEntity<Employee> createEmployee(@RequestParam Integer Id, @RequestBody Employee newEmployee) {
+        Employee addedEmployee = employeeService.addEmployee(newEmployee);
+        return ResponseEntity.created(URI.create(PATH+"/"+addedEmployee.getId())).body(addedEmployee);
+
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void deleteEmployee(@PathVariable(value = "id") Integer id) {
+    @DeleteMapping
+    public ResponseEntity<Void> deleteEmployee(@RequestParam Integer id) {
         employeeService.deleteEmployee(id);
+        return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/update/{id}")
-    public void updateEmployee(@PathVariable(value = "id") Integer id,@RequestBody Employee employee) throws ResourceNotFoundException {
-        employeeService.updateEmployee(id,employee);
+    @PutMapping
+    public ResponseEntity<Employee> updateEmployee(@RequestParam Integer id,@RequestBody Employee employee) throws ResourceNotFoundException {
+        Employee updatedEmployee = employeeService.updateEmployee(id,employee);
+        return ResponseEntity.created(URI.create(PATH+"/"+updatedEmployee.getId())).body(updatedEmployee);
     }
 }

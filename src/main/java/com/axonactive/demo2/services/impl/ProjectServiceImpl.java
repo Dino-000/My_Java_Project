@@ -21,8 +21,9 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void addProject(Project project) {
-        projectRepository.save(project);
+    public Project addProject(Project project) {
+       Project newProject= projectRepository.save(project);
+       return newProject;
     }
 
     @Override
@@ -36,12 +37,13 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void updateProject(Integer id, Project updateDetail) throws ResourceNotFoundException {
+    public Project updateProject(Integer id, Project updateDetail) throws ResourceNotFoundException {
         Project updateProject = findProjectById(id).orElseThrow(()-> new ResourceNotFoundException("Can not found that project"));
         updateProject.setName(updateDetail.getName());
         updateProject.setDepartment(updateDetail.getDepartment());
         updateProject.setArea(updateDetail.getArea());
         projectRepository.save(updateProject);
+        return  updateProject;
     }
 
     @Override

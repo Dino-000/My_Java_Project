@@ -10,13 +10,13 @@ import java.util.Optional;
 public interface DepartmentLocationService {
     List<DepartmentLocation> getAll();
 
-    void addDepartmentLocation(DepartmentLocation departmentLocation);
+    DepartmentLocation addDepartmentLocation(DepartmentLocation departmentLocation);
 
     void deleteDepartmentLocation(Integer id);
 
     Optional<DepartmentLocation> findDepartmentLocationById(Integer id);
 
-    void updateDepartmentLocation( Integer id, DepartmentLocation departmentLocation) throws ResourceNotFoundException;
+    DepartmentLocation updateDepartmentLocation( Integer id, DepartmentLocation departmentLocation) throws ResourceNotFoundException;
 
     List<DepartmentLocation> findByLocation(String location);
 

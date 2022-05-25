@@ -9,12 +9,12 @@ import java.util.Optional;
 public interface RelativesService {
     List<Relatives> getAll();
 
-    void addRelatives(Relatives relatives);
+    Relatives addRelatives(Relatives relatives);
 
     void deleteRelatives(Integer id);
 
     Optional<Relatives> findRelativesById(Integer id);
-    void updateRelatives( Integer id, Relatives relatives) throws ResourceNotFoundException;
+    Relatives updateRelatives( Integer id, Relatives relatives) throws ResourceNotFoundException;
 
     List<Relatives> findByRelationShip(String relationship);
 
